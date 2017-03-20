@@ -99,7 +99,7 @@ router.get('/authorized', function (req, res, next) {
     .then(gpr => {
       let user = gpr[1];
       let room = gpr[2];
-      return Promise.all([gpr[0], gpr[1], gpr[2], user.populateTokens(room, code)]);
+      return Promise.all([gpr[0], gpr[1], gpr[2], user.populateTokensFromCode(room, code)]);
     })
     .then (gpr => {
       let user = gpr[1];

@@ -11,7 +11,17 @@ module.exports = (sequelize, DataTypes) => {
     {
       underscored: true,
       instanceMethods: {
-        populateTokens: function (room, code) {
+        getUserRoom: function (room) {
+          let UserRoom = this.sequelize.import('user_rooms.js');
+          let promise = UserRoom.findOne({ "where": { "room_id": room.id, "user_id": this.id } })
+            .then(ur => {
+              return ur.populateTokens(room);
+            });
+
+          return promise;
+        },
+        populateTokensFromCode: function (room, code) {
+          let UserRoom = this.sequelize.import('user_rooms.js');
           let formData = {
             "grant_type": "authorization_code",
             "code": code,
@@ -31,20 +41,52 @@ module.exports = (sequelize, DataTypes) => {
 
           let promise = rp(options)
             .then(body => {
-              return room.getUserRoom({"user_id": this.id});
+              return Promise.all([
+                UserRoom.findOne({ "where": { "room_id": room.id, "user_id": this.id } }),
+                body
+              ]);
             })
-            .then(ur => {
-              if (!ur) {
-                return Promise.resolve();
+            .then(p => {
+              let userRoom = p[0];
+              let body = p[1];
+
+              if (!userRoom) {
+                userRoom = UserRoom.build({
+                  "room_id": room.id,
+                  "user_id": this.id
+                });
               }
-              return ur.save();
+
+              userRoom.access_token = body.access_token;
+              userRoom.refresh_token = body.refresh_token;
+              userRoom.access_token_expires = new Date((new Date() * 1) + body.expires_in * 1000)
+
+              return userRoom.save();
             });
 
           return promise;
         },
 
         updateUserInfo: function (room) {
-          return Promise.resolve();
+          let promise = this.getUserRoom(room)
+            .then(ur => {
+              let options = {
+                method: 'GET',
+                uri: 'https://api.hipchat.com/v2/user/' + this.hipchat_user_id,
+                json: true,
+                auth: {
+                  bearer: ur.access_token
+                }
+              };
+              return rp(options);
+            })
+            .then(body => {
+              this.full_name = body.name;
+              this.avatar = body.photo_url;
+              return this.save();
+            });
+
+          return promise;
         }
       },
       classMethods: {
