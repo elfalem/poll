@@ -1,0 +1,58 @@
+@import url(//fonts.googleapis.com/css?family=Roboto:100,400,300,500);
+
+* {
+  font-family: 'Roboto','Arial',sans-serif;
+}
+
+body {
+  position:absolute;
+  left: 0;
+  top: 0;
+}
+
+div.expires_box {
+  width:50px;
+}
+
+#container {
+  width:825px;
+  max-width:825px;
+  margin:0 auto;
+}
+
+#options_table {
+  margin: 0 auto;
+  .choice_row {
+    cursor: pointer;
+  }
+}
+
+div.oops {
+  background-color: rgb(200,33,33);
+  color: #fff;
+  padding: 8px;
+}
+
+td.choice_cell label.option-label {
+  top: -14px;
+}
+
+/* shake animation from animate.css (https://github.com/daneden/animate.css) */
+@keyframes shake {
+  from, to {
+    transform: translate3d(0, 0, 0);
+  }
+
+  10%, 30%, 50%, 70%, 90% {
+    transform: translate3d(-10px, 0, 0);
+  }
+
+  20%, 40%, 60%, 80% {
+    transform: translate3d(10px, 0, 0);
+  }
+}
+
+.shake {
+  animation-name: shake;
+  animation-duration: 1s;
+}

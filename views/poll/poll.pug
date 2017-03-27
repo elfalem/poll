@@ -1,0 +1,13 @@
+extends poll_dialog
+block content
+  script.
+    var jwt="#{jwt}"
+    var pollId="#{question.id}"
+  h4= question.question
+  table#options_table.mdl-data-table.mdl-js-data-table.mdl-shadow--2dp
+    tbody
+      each option in #{question.options}
+        tr
+          td= option
+  p
+    a(href="/poll/#{question.id}/results?signed_request#{jwt}") View results

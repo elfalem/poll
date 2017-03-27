@@ -1,6 +1,8 @@
 "use strict";
 const config = require('config');
 const rp = require('request-promise');
+const jwt = require('jwt-simple');
+const moment = require('moment');
 
 module.exports = (sequelize, DataTypes) => {
   var User = sequelize.define("user", {
@@ -87,9 +89,109 @@ module.exports = (sequelize, DataTypes) => {
             });
 
           return promise;
+        },
+
+        postCard: function (question, room) {
+          let promise = this.getUserRoom(room)
+            .then(ur => {
+              let relTime = moment(question.expiration).fromNow();
+              let data = {
+                "message_format": "text",
+                "notify": true,
+                "message": question.question,
+                "card": {
+                  "style": "media",
+                  "description": {
+                    "value": `Please note on this poll. This poll closes ${relTime}.`,
+                    "format": "text"
+                  },
+                  "format": "compact",
+                  "url": `hipchat://www.hipchat.com/room/${room.hipchat_room_id}?target=poll_dialog_vote#${question.id}`,
+                  "title": question.question,
+                  "thumbnail": {
+                    "url": "https://poll.nickroge.rs/images/vote.png",
+                    "width": 313,
+                    "height": 313
+                  },
+                  "id": `poll.card.${question.id}`
+                }
+              };
+              let options = {
+                method: 'POST',
+                uri: `https://api.hipchat.com/v2/room/${room.hipchat_room_id}/notification`,
+                json: true,
+                auth: {
+                  bearer: ur.access_token
+                },
+                body: data
+              };
+
+              return rp(options);
+            });
         }
       },
       classMethods: {
+        fromJwt: function (jwtEncoded) {
+          let Room = this.sequelize.import('rooms.js');
+          let ret = {
+            validJwt: false,
+            validUser: false,
+            userId: null,
+            user: null,
+            room: null
+          };
+
+          // first decode without verifying signature in order to get the room ID
+          // we will validate the jwt's signature later
+
+          let jwtUnverified = jwt.decode(jwtEncoded, '', true);
+          let roomId = parseInt(jwtUnverified.context.room_id);
+
+          let promise = Room.findOne({
+            "where": {
+              "hipchat_room_id": roomId
+            }
+          })
+            .then(r => {
+              if (!r) {
+                return Promise.resolve(ret);
+              }
+              ret.room = r;
+
+              // decode jwt now with validation
+              try {
+                let jwtVerified = jwt.decode(jwtEncoded, r.oauth_secret);
+                let userId = jwtVerified.sub;
+                ret.validJwt = true;
+                ret.userId = userId;
+                return this.findOne({
+                  "where": {
+                    "hipchat_user_id": userId
+                  }
+                });
+              } catch (e) {
+                return Promise.resolve(ret);
+              }
+            })
+            .then(u => {
+              if (!u) {
+                return Promise.resolve(ret);
+              }
+              return Promise.all([u, u.getUserRoom(ret.room)]);
+            })
+            .then(ur => {
+              let user = ur[0];
+              let tokens = ur[1];
+
+              ret.validUser = user.full_name != "" && tokens != null;
+              ret.user = user;
+
+              return Promise.resolve(ret);
+            });
+
+          return promise;
+        },
+
         associate: function (models) {
           User.belongsTo(models.group, {
             onDelete: "CASCADE",

@@ -1,0 +1,11 @@
+extends poll_dialog
+block content
+  script.
+    var jwt="#{jwt}";
+
+    function receiveParameters(p) {
+      window.location.replace('/poll/' + p.card.url.split('#')[1] + '?signed_request=' + jwt);
+    }
+    HipChat.register({
+      "receive-parameters": receiveParameters
+    });

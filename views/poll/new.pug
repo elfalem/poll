@@ -1,0 +1,59 @@
+extends poll_dialog
+block content
+  script(src="/javascripts/newPoll.js")
+  script.
+    var jwt="#{jwt}"
+  div.mdl-grid
+    div.mdl-cell.mdl-cell--12-col
+      h4 Enter the Question:
+      div.mdl-textfield.mdl-js-textfield(style="width:100%")
+        textarea#poll_question.mdl-textfield__input(type="text" rows="2")
+        label.mdl-textfield__label(for="poll_question") Poll Question
+  div.mdl-grid
+    div.mdl-cell.mdl-cell--6-col.mdl-cell--2-col-phone
+      h4 Question Type:
+      div.mdl-grid
+        div.mdl-cell.mdl-cell--6-col.mdl-cell--1-col-phone
+          label.mdl-radio.mdl-js-radio.mdl-js-ripple-effect(for="type-radio")
+            input#type-radio.mdl-radio__button(type="radio" name="question_type" value="1" checked)
+            span.mdl-radio__label Single Choice
+        div.mdl-cell.mdl-cell--6-col.mdl-cell--1-col-phone
+          label.mdl-radio.mdl-js-radio.mdl-js-ripple-effect(for="type-check")
+            input#type-check.mdl-radio__button(type="radio" name="question_type" value="2")
+            span.mdl-radio__label Multiple Choice
+    div.mdl-cell.mdl-cell--6-col.mdl-cell--2-col-phone
+      h4 Poll Closes After:
+      div(style="text-align: center;")
+        div.mdl-textfield.mdl-js-textfield.expires_box
+          input#expires_value.mdl-textfield__input(type="numeric" maxlength="2")
+          label.mdl-textfield__label(for="expires_value") #
+        select#expires_time
+          option minutes
+          option hours
+          option day
+  div.mdl-grid
+    div.mdl-cell.mdl-cell--12-col
+      h4 Options
+      table#options_table.mdl-data-table.mdl-js-data-table.mdl-shadow--2dp
+        thead
+          tr
+            th #
+            th Option text
+            th
+        tfoot
+          tr
+            td
+            td
+            td
+              button.mdl-button.mdl-js-button.mdl-button--fab.mdl-button--mini-fab.mdl-button--colored(onclick="addRow()")
+                i.material-icons add
+        tbody
+          tr(data-row="1")
+            td.number_cell 1.
+            td.text_cell
+              div.mdl-textfield.mdl-js-textfield
+                input#option_text_1.mdl-textfield__input(type="text")
+                label.mdl-textfield__label(for="option_text_1") Option Text...
+            td.delete_cell
+              button.mdl-button.mdl-js-button.mdl-button--icon(onclick="return removeRow(this);")
+                i.material-icons delete forever
