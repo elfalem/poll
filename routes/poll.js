@@ -25,7 +25,7 @@ router.get('/new', function (req, res, next) {
 
 router.get('/', function (req, res, next) {
   let userJwt = req.query.signed_request;
-  res.render('poll/index', {"jwt": userJwt});
+  res.render('poll/index', { "jwt": userJwt });
 });
 
 router.get('/:pollId', function (req, res, next) {
@@ -37,15 +37,22 @@ router.get('/:pollId', function (req, res, next) {
   }
 
   let promise = models.question.findOne({
-    "where": { "id": pollId },
-    "include": [models.option, models.user_answer]
+    "where": { 
+      "id": pollId
+    },
+    "include": [{
+      "model": models.option,
+      "include": {
+        "model": models.user_answer
+      }
+    }]
   })
     .then(q => {
       if (!q) {
         res.send(404);
         return Promise.resolve();
       }
-      return Promise.all([q, user.fromJwt(userJwt)]);
+      return Promise.all([q, models.user.fromJwt(userJwt)]);
     })
     .then(a => {
       let question = a[0];
