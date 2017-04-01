@@ -11,9 +11,9 @@ router.get('/new', function (req, res, next) {
       if (user.validJwt && user.validUser) {
         res.render('poll/new', { "user": user.user, "jwt": userJwt });
       } else if (!user.validJwt) {
-        res.render('poll/invalid_jwt');
+        res.render('poll/invalid_jwt', {"user": user});
       } else if (!user.validUser) {
-        res.render('poll/invalid_user');
+        res.render('poll/invalid_user', {"user": user});
       }
     })
     .catch(err => {
@@ -62,17 +62,21 @@ router.get('/:pollId', function (req, res, next) {
     })
     .then(a => {
       if (a === undefined) {
-        return; // expired question, stop evaluation
+        return; // page needs to redirect, stop evaluation
       }
       let question = a[0];
       let user = a[1];
 
       if (user.validJwt && user.validUser) {
+        if (question.hasVoteFrom(user.user.id)) {
+          res.redirect(`/poll/${pollId}/results?signed_request=${userJwt}`);
+          return;
+        }
         res.render('poll/show', { "question": question, "user": user.user, "jwt": userJwt });
       } else if (!user.validJwt) {
-        res.render('poll/invalid_jwt');
+        res.render('poll/invalid_jwt', {"user": user});
       } else if (!user.validUser) {
-        res.render('poll/invalid_user');
+        res.render('poll/invalid_user', {"user": user});
       }
     })
     .catch(err => {
@@ -249,9 +253,9 @@ router.get('/:pollId/results', function (req, res, next) {
       if (user.validJwt && user.validUser) {
         res.render('poll/results', { "question": question, "user": user.user, "jwt": userJwt });
       } else if (!user.validJwt) {
-        res.render('poll/invalid_jwt');
+        res.render('poll/invalid_jwt', {"user": user});
       } else if (!user.validUser) {
-        res.render('poll/invalid_user');
+        res.render('poll/invalid_user', {"user": user});
       }
     })
     .catch(err => {

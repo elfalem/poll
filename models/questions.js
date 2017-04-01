@@ -6,14 +6,13 @@ module.exports = (sequelize, DataTypes) => {
     expiration: { type: DataTypes.DATE },
   },
     {
+      defaultScope: {
+        include: [sequelize.import('options.js')] // always include option data
+      },
       underscored: true,
       getterMethods: {
         hasExpired: function () {
           return this.expiration <= new Date();
-        },
-
-        rowPartial: function () {
-          return this.question_type_id == 2 ? 'row_multiple' : 'row_single';
         },
 
         votes: function () {
@@ -23,7 +22,14 @@ module.exports = (sequelize, DataTypes) => {
             return {
               optionText: o.option,
               votes: votes,
-              pct: Math.round((votes*100.0)/total, 1)
+              pct: Math.round((votes * 100.0) / total, 1),
+              voters: o.user_answers.map(v => {
+                return {
+                  "userId": v.user.hipchat_user_id,
+                  "name": v.user.full_name,
+                  "avatar": v.user.avatar
+                }
+              })
             };
           });
         },
@@ -33,6 +39,19 @@ module.exports = (sequelize, DataTypes) => {
             .reduce((a, b) => {
               return a + b;
             }, 0);
+        }
+      },
+      instanceMethods: {
+        hasVoteFrom: function(userId) {
+          for(let o of this.options) {
+            for(let u of o.user_answers) {
+              if (u.user.id === userId) {
+                return true;
+              }
+            }
+          }
+
+          return false;
         }
       },
       classMethods: {

@@ -20,11 +20,25 @@ div.expires_box {
   margin:0 auto;
 }
 
+#container_error {
+  width:600px;
+  max-width:600px;
+  margin:0 auto;
+}
+
 #options_table {
   margin: 0 auto;
   .choice_row {
     cursor: pointer;
   }
+}
+
+img.avatar {
+    width: 24px;
+    height: 24px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
 }
 
 div.oops {

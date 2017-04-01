@@ -1,0 +1,26 @@
+extends poll_dialog_error
+block content
+  div.mdl-grid
+    div.mdl-cell.mdl-cell--12-col.oops Oops!
+  div.mdl-grid
+    div.mdl-cell.mdl-cell--12-col 
+      p Before you can create or vote on a poll, you must authorize this app to access your HipChat user information. Please 
+        a(target="_blank" href=`/api/authorizing?room_id=${user.room.id}&user_id=${user.userId}`) approve access
+        | 
+        | and then try again.
+  script.
+    if (typeof AP !== 'undefined') {
+      HipChat.dialog.update({
+        title: "Poll | Authorize User",
+        options: {
+          size: {
+            width: "600px",
+            height: "210px"
+          }
+        }
+      });
+
+      HipChat.dialog.updatePrimaryAction({
+        enabled: false
+      });
+    }

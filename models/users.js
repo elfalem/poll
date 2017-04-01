@@ -102,7 +102,7 @@ module.exports = (sequelize, DataTypes) => {
                 "card": {
                   "style": "media",
                   "description": {
-                    "value": `Please note on this poll. This poll closes ${relTime}.`,
+                    "value": `Please vote on this poll. This poll closes ${relTime}.`,
                     "format": "text"
                   },
                   "format": "compact",
@@ -186,6 +186,9 @@ module.exports = (sequelize, DataTypes) => {
               ret.validUser = user.full_name != "" && tokens != null;
               ret.user = user;
 
+              return Promise.resolve(ret);
+            })
+            .catch(err => {
               return Promise.resolve(ret);
             });
 

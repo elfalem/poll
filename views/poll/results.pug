@@ -3,6 +3,11 @@ block content
   script.
     var jwt="#{jwt}"
     var pollId="#{question.id}"
+    if (typeof AP !== 'undefined') {
+      HipChat.dialog.updatePrimaryAction({
+        enabled: false
+      });
+    }
   h4= question.question
   table#options_table.mdl-data-table.mdl-js-data-table.mdl-shadow--2dp
     tbody
@@ -11,3 +16,11 @@ block content
           td
             strong= v.optionText
           td= `${v.votes} votes (${v.pct}%)`
+          td
+            each vr in v.voters
+              +avatar(vr)
+
+mixin avatar(av)
+  div(id=`avatar-${av.userId}`)
+    img.avatar(src=`${av.avatar}`)
+    div.mdl-tooltip(data-mdl-for=`avatar-${av.userId}`)= av.name
