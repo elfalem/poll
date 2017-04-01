@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
         },
 
         totalVotes: function () {
-          return this.options.map(o => { o.user_answers.length })
+          return this.options.map(o => o.user_answers.length)
             .reduce((a, b) => {
               return a + b;
             }, 0);

@@ -6,8 +6,8 @@ block content
   h4= question.question
   table#options_table.mdl-data-table.mdl-js-data-table.mdl-shadow--2dp
     tbody
-      each option in #{question.options}
+      each v in question.votes
         tr
-          td= option
-  p
-    a(href="/poll/#{question.id}/results?signed_request#{jwt}") View results
+          td
+            strong= v.optionText
+          td= `${v.votes} votes (${v.pct}%)`
