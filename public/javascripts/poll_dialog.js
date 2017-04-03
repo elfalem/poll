@@ -23,8 +23,8 @@ function submitPollVote() {
     selections: selections,
     jwt: jwt
   };
-  
-  jQuery.post('/poll/'+pollId+'/vote', data).then(submitPollVoteDone);
+
+  jQuery.post('/poll/' + pollId + '/vote', data).then(submitPollVoteDone);
 }
 
 function submitPollVoteDone() {
@@ -55,9 +55,9 @@ function addRow() {
   // prior to being added to the dom.
   newRow.find('.text_cell div').removeClass('is-upgraded');
   newRow.find('.text_cell div').removeAttr('data-upgraded');
-  newRow.find('.text_cell input').attr('id','option_text_'+n);
+  newRow.find('.text_cell input').attr('id', 'option_text_' + n);
   newRow.find('.text_cell input').val('');
-  newRow.find('.text_cell label').attr('for','option_text_'+n);
+  newRow.find('.text_cell label').attr('for', 'option_text_' + n);
   row.after(newRow);
   componentHandler.upgradeElement(newRow.find('.text_cell div')[0]);
   newRow.find('.text_cell input').focus();
@@ -68,14 +68,14 @@ function removeRow(a) {
   if (rows.length == 1) {
     rows.eq(0).find('.text_cell input').val('');
     return false;
-  } 
+  }
   jQuery(a).parent().parent().remove();
-  
+
   rows = jQuery('#options_table tbody tr');
   var i = 0;
   for (; i < rows.length; i++) {
-    rows.attr('data-row', i+1);
-    rows.eq(i).find('.number_cell').html((i+1) + '.');
+    rows.attr('data-row', i + 1);
+    rows.eq(i).find('.number_cell').html((i + 1) + '.');
   }
   return false;
 }
@@ -90,13 +90,13 @@ function createPoll() {
   data.expires_value = jQuery('#expires_value').val();
   data.expires_time = jQuery('#expires_time option:selected').text();
   data.options = [];
-  
+
   var rows = jQuery('#options_table tbody tr');
   var i = 0;
   for (; i < rows.length; i++) {
     data.options.push(rows.eq(i).find('.text_cell input').val());
   }
-  
+
   jQuery.post('/poll', data).then(createPollDone);
 }
 
@@ -109,7 +109,7 @@ function resizeWindow() {
     return;
   }
   var newSize = Math.min(jQuery('#container').height() + 70, 600);
-  
+
   HipChat.dialog.update({
     options: {
       size: {
@@ -126,11 +126,12 @@ if (typeof AP !== 'undefined' && typeof HipChat !== 'undefined') {
   jQuery(resizeWindow);
 }
 
+// for removing animation CSS classes after the animation ends so they can be triggered again
 $.fn.extend({
-    animateCss: function (animationName) {
-        var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
-        this.addClass('animated ' + animationName).one(animationEnd, function() {
-            $(this).removeClass('animated ' + animationName);
-        });
-    }
+  animateCss: function (animationName) {
+    var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+    this.addClass('animated ' + animationName).one(animationEnd, function () {
+      $(this).removeClass('animated ' + animationName);
+    });
+  }
 });

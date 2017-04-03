@@ -11,9 +11,9 @@ router.get('/new', function (req, res, next) {
       if (user.validJwt && user.validUser) {
         res.render('poll/new', { "user": user.user, "jwt": userJwt });
       } else if (!user.validJwt) {
-        res.render('poll/invalid_jwt', {"user": user});
+        res.render('poll/invalid_jwt', { "user": user });
       } else if (!user.validUser) {
-        res.render('poll/invalid_user', {"user": user});
+        res.render('poll/invalid_user', { "user": user });
       }
     })
     .catch(err => {
@@ -74,9 +74,9 @@ router.get('/:pollId', function (req, res, next) {
         }
         res.render('poll/show', { "question": question, "user": user.user, "jwt": userJwt });
       } else if (!user.validJwt) {
-        res.render('poll/invalid_jwt', {"user": user});
+        res.render('poll/invalid_jwt', { "user": user });
       } else if (!user.validUser) {
-        res.render('poll/invalid_user', {"user": user});
+        res.render('poll/invalid_user', { "user": user });
       }
     })
     .catch(err => {
@@ -253,9 +253,54 @@ router.get('/:pollId/results', function (req, res, next) {
       if (user.validJwt && user.validUser) {
         res.render('poll/results', { "question": question, "user": user.user, "jwt": userJwt });
       } else if (!user.validJwt) {
-        res.render('poll/invalid_jwt', {"user": user});
+        res.render('poll/invalid_jwt', { "user": user });
       } else if (!user.validUser) {
-        res.render('poll/invalid_user', {"user": user});
+        res.render('poll/invalid_user', { "user": user });
+      }
+    })
+    .catch(err => {
+      next(err);
+    });
+
+  return promise;
+});
+
+router.get('/:pollId/results.json', function (req, res, next) {
+  let userJwt = req.query.signed_request;
+  let pollId = parseInt(req.params.pollId);
+  if (isNaN(pollId) || pollId <= 0) {
+    res.send(400).send("");
+    return;
+  }
+
+  let promise = models.question.findOne({
+    "where": {
+      "id": pollId
+    },
+    "include": [{
+      "model": models.option,
+      "include": {
+        "model": models.user_answer
+      }
+    }]
+  })
+    .then(q => {
+      if (!q) {
+        res.send(404);
+        return;
+      }
+      return Promise.all([q, models.user.fromJwt(userJwt)]);
+    })
+    .then(a => {
+      let question = a[0];
+      let user = a[1];
+
+      if (user.validJwt && user.validUser) {
+        res.json(question);
+      } else if (!user.validJwt) {
+        res.status(400).send('');
+      } else if (!user.validUser) {
+        res.status(400).send('');
       }
     })
     .catch(err => {

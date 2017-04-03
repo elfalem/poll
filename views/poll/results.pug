@@ -1,26 +1,19 @@
 extends poll_dialog
 block content
+  script(type="text/javascript" src="/javascripts/poll_results.js")
   script.
     var jwt="#{jwt}"
-    var pollId="#{question.id}"
+    var pollId=parseInt("#{question.id}");
+
+    getData(pollId, jwt);
+
     if (typeof AP !== 'undefined') {
       HipChat.dialog.updatePrimaryAction({
         enabled: false
       });
     }
   h4= question.question
-  table#options_table.mdl-data-table.mdl-js-data-table.mdl-shadow--2dp
-    tbody
-      each v in question.votes
-        tr
-          td
-            strong= v.optionText
-          td= `${v.votes} votes (${v.pct}%)`
-          td
-            each vr in v.voters
-              +avatar(vr)
-
-mixin avatar(av)
-  div(id=`avatar-${av.userId}`)
-    img.avatar(src=`${av.avatar}`)
-    div.mdl-tooltip(data-mdl-for=`avatar-${av.userId}`)= av.name
+  div#options_container
+    div#options_spinner.mdl-spinner.mdl-spinner--single-color.mdl-js-spinner.is-active
+    table#options_table.mdl-data-table.mdl-js-data-table.mdl-shadow--2dp
+      tbody

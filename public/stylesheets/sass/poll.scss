@@ -28,9 +28,14 @@ div.expires_box {
 
 #options_table {
   margin: 0 auto;
+  display: none;
   .choice_row {
     cursor: pointer;
   }
+}
+
+#options_spinner {
+  margin: 0 auto;
 }
 
 img.avatar {
