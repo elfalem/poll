@@ -109,7 +109,7 @@ module.exports = (sequelize, DataTypes) => {
                   "url": `hipchat://www.hipchat.com/room/${room.hipchat_room_id}?target=poll_dialog_vote#${question.id}`,
                   "title": question.question,
                   "thumbnail": {
-                    "url": "https://poll.nickroge.rs/images/vote.png",
+                    "url": `${config.get('hostname')}/images/vote.png`,
                     "width": 313,
                     "height": 313
                   },

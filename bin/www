@@ -13,7 +13,7 @@ var models = require('../models')
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = 4001;
 app.set('port', port);
 
 /**
@@ -21,6 +21,13 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+/**
+ * socket.io
+ */
+
+var io = app.io
+io.attach(server);
 
 /**
  * Listen on provided port, on all network interfaces.

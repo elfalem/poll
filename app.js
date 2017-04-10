@@ -1,4 +1,5 @@
 var express = require('express');
+var socketIo = require('socket.io');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -6,17 +7,18 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var sass = require('node-sass-middleware');
 
+var app = express();
+var io = socketIo();
+app.io = io;
+
 var index = require('./routes/index');
 var api = require('./routes/api');
-var poll = require('./routes/poll');
+var poll = require('./routes/poll')(io);
 var capabilities = require('./routes/capabilities');
-
-var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-/*
 app.use(sass({
   src: __dirname + '/public/stylesheets/sass',
   dest: __dirname + '/public/stylesheets',
@@ -24,7 +26,6 @@ app.use(sass({
   prefix: '/stylesheets',
   outputStyle: 'compressed'
 }));
-*/
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

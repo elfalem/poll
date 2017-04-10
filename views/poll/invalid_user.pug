@@ -1,7 +1,7 @@
 extends poll_dialog_error
 block content
   div.mdl-grid
-    div.mdl-cell.mdl-cell--12-col.oops Oops!
+    div.mdl-cell.mdl-cell--12-col.oops Authorization Required
   div.mdl-grid
     div.mdl-cell.mdl-cell--12-col 
       p Before you can create or vote on a poll, you must authorize this app to access your HipChat user information. Please 
@@ -9,7 +9,7 @@ block content
         | 
         | and then try again.
   script.
-    if (typeof AP !== 'undefined') {
+    if (typeof AP !== 'undefined' && typeof HipChat !== 'undefined') {
       HipChat.dialog.update({
         title: "Poll | Authorize User",
         options: {

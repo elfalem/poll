@@ -27,6 +27,18 @@ div.expires_box {
 }
 
 #options_table {
+  width: 100%;
+}
+
+.choice_cell {
+  width:40px;
+}
+
+.text_cell div {
+  width: 100%;
+}
+
+#results_table {
   margin: 0 auto;
   display: none;
   .choice_row {
@@ -34,7 +46,7 @@ div.expires_box {
   }
 }
 
-#options_spinner {
+#results_spinner {
   margin: 0 auto;
 }
 

@@ -4,6 +4,7 @@ function getData(pollId, jwt) {
 
 function updateResultsTable(data) {
   let tableBody = jQuery("<tbody>");
+  let i = 0;
 
   for (let vote of data.votes) {
     let row = jQuery("<tr>");
@@ -11,18 +12,18 @@ function updateResultsTable(data) {
     row.append(`<td>${vote.votes} votes (${vote.pct}%)</td>`);
     let avatarsCell = jQuery("<td>");
     for (let voter of vote.voters) {
-      avatarsCell.append(`<div id="avatar-${voter.userId}"><img class="avatar" src="${voter.avatar}">
-        <div class="mdl-tooltip" data-mdl-for="avatar-${voter.userId}">${voter.name}</div></div>`);
+      avatarsCell.append(`<span id="avatar-${voter.userId}-${++i}"><img class="avatar" src="${voter.avatar}">
+        <div class="mdl-tooltip" data-mdl-for="avatar-${voter.userId}-${i}">${voter.name}</div></span>`);
     }
 
     row.append(avatarsCell);
     tableBody.append(row);
   }
 
-  jQuery("#options_table tbody").remove();
-  jQuery("#options_table").append(tableBody);
-  jQuery("#options_table").show();
-  jQuery("#options_spinner").remove();
+  jQuery("#results_table tbody").remove();
+  jQuery("#results_table").append(tableBody);
+  jQuery("#results_table").show();
+  jQuery("#results_spinner").remove();
 
   componentHandler.upgradeDom();
   resizeWindow();

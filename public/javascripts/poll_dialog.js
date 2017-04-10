@@ -105,7 +105,7 @@ function createPollDone() {
 }
 
 function resizeWindow() {
-  if (jQuery('#container').height() == 0) {
+  if (typeof HipChat === "undefined" || jQuery('#container').height() == 0) {
     return;
   }
   var newSize = Math.min(jQuery('#container').height() + 70, 600);

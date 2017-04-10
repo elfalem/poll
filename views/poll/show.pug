@@ -26,6 +26,6 @@ mixin row_multiple(option)
   tr.choice_row(onclick="selectRowCheck(this);")
     td.choice_cell
       label.option-label.mdl-checkbox.mdl-js-checkbox.mdl-js-ripple-effect(for=`option-${option.id}`)
-        input.mdl-checkbox__input(id=`option-${option.id}` type="radio" name="options" value=`${option.id}`)
+        input.mdl-checkbox__input(id=`option-${option.id}` type="checkbox" name="options" value=`${option.id}`)
     td.text_cell
       span= option.option

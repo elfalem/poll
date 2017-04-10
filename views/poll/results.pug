@@ -1,19 +1,25 @@
 extends poll_dialog
 block content
   script(type="text/javascript" src="/javascripts/poll_results.js")
+  script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js")
   script.
-    var jwt="#{jwt}"
-    var pollId=parseInt("#{question.id}");
+    let jwt="#{jwt}"
+    let pollId=parseInt("#{question.id}");
 
     getData(pollId, jwt);
 
-    if (typeof AP !== 'undefined') {
+    let socket = io.connect('#{hostname}');
+    socket.on('update', function (data) {
+      updateResultsTable(JSON.parse(data));
+    });
+
+    if (typeof AP !== 'undefined' && typeof HipChat !== 'undefined' ) {
       HipChat.dialog.updatePrimaryAction({
         enabled: false
       });
     }
   h4= question.question
-  div#options_container
-    div#options_spinner.mdl-spinner.mdl-spinner--single-color.mdl-js-spinner.is-active
-    table#options_table.mdl-data-table.mdl-js-data-table.mdl-shadow--2dp
+  div#results_container
+    div#results_spinner.mdl-spinner.mdl-spinner--single-color.mdl-js-spinner.is-active
+    table#results_table.mdl-data-table.mdl-js-data-table.mdl-shadow--2dp
       tbody

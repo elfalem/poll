@@ -1,4 +1,5 @@
 "use strict";
+const config = require('config');
 
 module.exports = (sequelize, DataTypes) => {
   var Room = sequelize.define("room", {
@@ -12,8 +13,8 @@ module.exports = (sequelize, DataTypes) => {
           return "https://www.hipchat.com/users/authorize?response_type=code" +
             "&scope=view_group+send_notification" +
             "&signup=0" +
-            "&client_id=" + this.oauth_id +
-            "&redirect_uri=https://poll.nickroge.rs/api/authorized"
+            `&client_id=${this.oauth_id}` +
+            `&redirect_uri=${config.get('hostname')}/api/authorized`
         }
       },
       classMethods: {

@@ -1,11 +1,11 @@
 extends poll_dialog_error
 block content
   div.mdl-grid
-    div.mdl-cell.mdl-cell--12-col.oops Oops!
+    div.mdl-cell.mdl-cell--12-col.oops Error
   div.mdl-grid
-    div.mdl-cell.mdl-cell--12-col Invalid or expired JWT.
+    div.mdl-cell.mdl-cell--12-col Invalid or expired JWT. Please close this window and try again.
   script.
-    if (typeof AP !== 'undefined') {
+    if (typeof AP !== 'undefined' && typeof HipChat !== 'undefined') {
       AP.require("dialog", function(dialog) {
         dialog.updatePrimaryAction({
         enabled: false
