@@ -7,7 +7,7 @@ router.get('/', function (req, res, next) {
   let capabilities = {
     name: "Nick's Poll App",
     description: "Create poll questions and get results quickly in a HipChat room.",
-    key: "nicks-poll-app",
+    key: `nicks-poll-app-${process.env.NODE_ENV}`,
     links: {
       homepage: `${hostname}`,
       self: `${hostname}/capabilities`,
