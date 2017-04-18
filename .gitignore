@@ -3,3 +3,5 @@ config/
 *.log
 *.lock
 public/stylesheets/*.css
+.rsync_exclude
+

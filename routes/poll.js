@@ -70,8 +70,8 @@ var returnRouter = function (io) {
 
         if (user.validJwt && user.validUser) {
           if (question.hasVoteFrom(user.user.id)) {
-            res.redirect(`/poll/${pollId}/results?signed_request=${userJwt}`);
-            return;
+            //res.redirect(`/poll/${pollId}/results?signed_request=${userJwt}`);
+            //return;
           }
           res.render('poll/show', { "question": question, "user": user.user, "jwt": userJwt });
         } else if (!user.validJwt) {
@@ -138,6 +138,8 @@ var returnRouter = function (io) {
           res.status(400).send('Invalid expiration time value');
           return;
         }
+
+        q.generateSocketName();
 
         return Promise.all([user, q.save()]);
       })
@@ -236,8 +238,9 @@ var returnRouter = function (io) {
         });
       })
       .then(p => {
-        let hostname = config.get('hostname');
-        io.emit('update', JSON.stringify(p));
+        console.log(p.socket_name);
+        let namedSocket = io.of(`/${p.socket_name}`);
+        namedSocket.emit('update', JSON.stringify(p));
 
         res.status(201).send('');
       })

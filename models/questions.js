@@ -4,10 +4,14 @@ module.exports = (sequelize, DataTypes) => {
   var Question = sequelize.define("question", {
     question: { type: DataTypes.STRING, allowNull: false },
     expiration: { type: DataTypes.DATE },
+    socket_name: { type: DataTypes.STRING, allowNull: false }
   },
     {
       defaultScope: {
-        include: [sequelize.import('options.js')] // always include option data
+        include: [{
+          model: sequelize.import('options.js'),
+          order: "id"
+        }] // always include option data
       },
       underscored: true,
       getterMethods: {
@@ -42,9 +46,9 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       instanceMethods: {
-        hasVoteFrom: function(userId) {
-          for(let o of this.options) {
-            for(let u of o.user_answers) {
+        hasVoteFrom: function (userId) {
+          for (let o of this.options) {
+            for (let u of o.user_answers) {
               if (u.user.id === userId) {
                 return true;
               }
@@ -52,6 +56,16 @@ module.exports = (sequelize, DataTypes) => {
           }
 
           return false;
+        },
+        generateSocketName: function () {
+          const alpha = "abcdefghijklmnopqrstuvwxyz0123456789";
+          let name = "";
+          for (let i = 0; i < 16; i++) {
+            let r = Math.floor(Math.random() * alpha.length);
+            name += alpha[r];
+          }
+
+          this.socket_name = name;
         }
       },
       classMethods: {

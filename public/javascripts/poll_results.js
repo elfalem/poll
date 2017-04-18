@@ -10,7 +10,7 @@ function updateResultsTable(data) {
     let row = jQuery("<tr>");
     row.append(`<td><strong>${vote.optionText}</strong></td>`);
     row.append(`<td>${vote.votes} votes (${vote.pct}%)</td>`);
-    let avatarsCell = jQuery("<td>");
+    let avatarsCell = jQuery('<td class="avatars_cell">');
     for (let voter of vote.voters) {
       avatarsCell.append(`<span id="avatar-${voter.userId}-${++i}"><img class="avatar" src="${voter.avatar}">
         <div class="mdl-tooltip" data-mdl-for="avatar-${voter.userId}-${i}">${voter.name}</div></span>`);

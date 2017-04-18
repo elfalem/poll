@@ -8,7 +8,7 @@ block content
 
     getData(pollId, jwt);
 
-    let socket = io.connect('#{hostname}');
+    let socket = io('/#{question.socket_name}');
     socket.on('update', function (data) {
       updateResultsTable(JSON.parse(data));
     });
