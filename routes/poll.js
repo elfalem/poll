@@ -70,8 +70,8 @@ var returnRouter = function (io) {
 
         if (user.validJwt && user.validUser) {
           if (question.hasVoteFrom(user.user.id)) {
-            //res.redirect(`/poll/${pollId}/results?signed_request=${userJwt}`);
-            //return;
+            res.redirect(`/poll/${pollId}/results?signed_request=${userJwt}`);
+            return;
           }
           res.render('poll/show', { "question": question, "user": user.user, "jwt": userJwt });
         } else if (!user.validJwt) {
@@ -173,7 +173,7 @@ var returnRouter = function (io) {
       .then(user => {
         if (!user.validJwt || !user.validUser) {
           res.status(400).send('Bad user or JWT');
-          return;
+          return Promise.reject();
         }
 
         let q = models.question.findOne({
@@ -195,12 +195,17 @@ var returnRouter = function (io) {
 
         if (!q) {
           res.status(404).send('');
-          return;
+          return Promise.reject();
         }
 
         if (q.hasExpired) {
           res.status(400).send('Poll expired');
-          return;
+          return Promise.reject();
+        }
+
+        if (q.hasVoteFrom(user.user.id)) {
+          res.status(409).send('User has already voted');
+          return Promise.reject();
         }
 
         if (typeof selections === "string") {
@@ -214,7 +219,7 @@ var returnRouter = function (io) {
           let option = options.filter(o => o.id.toString() === s);
           if (option.length == 0) {
             res.status(400).send(`Invalid option '${s}'`);
-            return;
+            return Promise.reject();
           }
 
           promises.push(option[0].createUser_answer({
@@ -238,14 +243,15 @@ var returnRouter = function (io) {
         });
       })
       .then(p => {
-        console.log(p.socket_name);
         let namedSocket = io.of(`/${p.socket_name}`);
         namedSocket.emit('update', JSON.stringify(p));
 
         res.status(201).send('');
       })
       .catch(err => {
-        next(err);
+        if (typeof err !== "undefined") {
+          next(err);
+        }
       });
 
     return promise;
