@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     option: { type: DataTypes.STRING, allowNull: false }
   }, 
   {
+    timestamps: false,
     underscored: true,
     classMethods: {
       associate: function(models) {
