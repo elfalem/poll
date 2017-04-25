@@ -4,8 +4,8 @@ module.exports = {
   up: function (queryInterface, DataTypes) {
     let p = queryInterface.createTable('users', {
       id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
-      createdAt: { allowNull: false, type: DataTypes.DATE },
-      updatedAt: { allowNull: false, type: DataTypes.DATE },
+      created_at: { allowNull: false, type: DataTypes.DATE },
+      updated_at: { allowNull: false, type: DataTypes.DATE },
       group_id: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'groups', id: 'id' } },
       hipchat_user_id: { type: DataTypes.INTEGER, allowNull: false },
       full_name: { type: DataTypes.STRING, allowNull: false },
@@ -15,8 +15,8 @@ module.exports = {
       .then(() => {
         queryInterface.createTable('user_rooms', {
           id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
-          createdAt: { allowNull: false, type: DataTypes.DATE },
-          updatedAt: { allowNull: false, type: DataTypes.DATE },
+          created_at: { allowNull: false, type: DataTypes.DATE },
+          updated_at: { allowNull: false, type: DataTypes.DATE },
           user_id: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'users', id: 'id' } },
           room_id: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'rooms', id: 'id' } },
           access_token: { type: DataTypes.STRING, allowNull: false },
@@ -27,8 +27,8 @@ module.exports = {
       .then(() => {
         queryInterface.createTable('user_answers', {
           id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
-          createdAt: { allowNull: false, type: DataTypes.DATE },
-          updatedAt: { allowNull: false, type: DataTypes.DATE },
+          created_at: { allowNull: false, type: DataTypes.DATE },
+          updated_at: { allowNull: false, type: DataTypes.DATE },
           user_id: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'users', id: 'id' } },
           option_id: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'options', id: 'id' } }
         })

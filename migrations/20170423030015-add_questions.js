@@ -9,8 +9,8 @@ module.exports = {
       .then(() => {
         queryInterface.createTable('questions', {
           id: { type: DataTypes.INTEGER, allowNull: false, primaryKey: true, autoIncrement: true },
-          createdAt: { allowNull: false, type: DataTypes.DATE },
-          updatedAt: { allowNull: false, type: DataTypes.DATE },
+          created_at: { allowNull: false, type: DataTypes.DATE },
+          updated_at: { allowNull: false, type: DataTypes.DATE },
           question: { type: DataTypes.STRING, allowNull: false },
           expiration: { type: DataTypes.DATE },
           socket_name: { type: DataTypes.STRING, allowNull: false },
