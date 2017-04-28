@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
             return {
               optionText: o.option,
               votes: votes,
-              pct: Math.round((votes * 100.0) / total, 1),
+              pct: Math.round((votes * 100.0) / total * 100)/100,
               voters: o.user_answers.map(v => {
                 return {
                   "userId": v.user.hipchat_user_id,
